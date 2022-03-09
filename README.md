@@ -34,7 +34,7 @@ to be environmentally (IP, name) different).
 	az network nsg rule create \
     --resource-group fmw-explorations \
     --nsg-name vmoracle19c1NSG \
-    --name allow-oracle \
+    --name allow-em \
     --protocol tcp \
     --priority 1002 \
     --destination-port-range 5502
@@ -64,7 +64,7 @@ Adding a second VM
 	az network nsg rule create \
     --resource-group fmw-explorations \
     --nsg-name vmoracle19c2NSG \
-    --name allow-oracle \
+    --name allow-em \
     --protocol tcp \
     --priority 1002 \
     --destination-port-range 5502
@@ -108,4 +108,17 @@ Open firewall:
 	firewall-cmd --zone=public --add-port=1521/tcp --permanent
 	firewall-cmd --zone=public --add-port=5502/tcp --permanent
 	firewall-cmd --reload
+
+## Create the databases
+On both machines, ssh in again, then
+
+	sudo su - oracle
+	lsnrctl start # May fail, come back to later
+	mkdir /u02/oradata
+
+Now create the database, replace 1 with 2 for the second machine
+
+	dbca -silent -createDatabase -templateName General_Purpose.dbc -gdbname oratest1 -sid oratest1 -responseFile NO_VALUE -characterSet AL32UTF8 -sysPassword OraPasswd1 -systemPassword OraPasswd1 -createAsContainerDatabase false -databaseType MULTIPURPOSE -automaticMemoryManagement false -storageType FS -datafileDestination "/u02/oradata/" -ignorePreReqs
+	export ORACLE_SID=oratest1
+	echo "export ORACLE_SID=oratest1" >> ~oracle/.bashrc
 
