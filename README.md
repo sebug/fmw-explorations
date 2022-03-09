@@ -122,3 +122,27 @@ Now create the database, replace 1 with 2 for the second machine
 	export ORACLE_SID=oratest1
 	echo "export ORACLE_SID=oratest1" >> ~oracle/.bashrc
 
+## Fusion Middleware Machines
+For simplicity, we're running those on Windows Server 2019:
+
+	az vm create \
+	--resource-group fmw-explorations \
+    --name fmw1 \
+    --image MicrosoftWindowsServer:WindowsServer:2019-Datacenter:latest \
+    --size Standard_DS2_v2 \
+    --admin-username sgfeller \
+	--admin-password completeme \
+    --public-ip-address-allocation static \
+    --public-ip-address-dns-name fmw1	
+
+	az network nsg rule create \
+    --resource-group fmw-explorations \
+    --nsg-name fmw1NSG \
+    --name allow-rdp \
+    --protocol tcp \
+    --priority 1001 \
+    --destination-port-range 3389
+
+That's enough on the setup side, now we can actually start the configuration wizard.
+
+
